@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="guest">
+
+
+	<select id="getGuestBookList" resultType="com.javaex.vo.GuestVo">
+		<![CDATA[
+			select no,
+				   name,
+				   password as pw,
+				   content,
+				   to_char(reg_date,'yyyy-mm-dd HH24:mi:ss') regdate
+			 from guestbook
+			 order by no desc
+		]]>	
+	</select>
+	
+	
+	<!-- 내용추가 -->
+	<insert id="insert" parameterType="com.javaex.vo.GuestVo">
+		<![CDATA[
+			insert into guestbook
+			values (seq_no.nextval,
+					#{name},
+					#{pw},
+					#{content},
+					SYSDATE)
+		]]>
+	</insert>
+	
+	<!-- 내용삭제 -->
+	<delete id="delete" parameterType="com.javaex.vo.GuestVo">
+		<![CDATA[
+			delete from guestbook
+			where no = #{no}
+			and password = #{pw}
+		]]>
+	</delete>
+	
+	
+	<!-- 방명록 글저장 ajax -->
+	<insert id="insertSelectKey" parameterType="com.javaex.vo.GuestVo">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+		 select seq_no.nextval from dual
+		</selectKey>
+		<![CDATA[
+		INSERT INTO guestbook
+		VALUES (#{no},#{name},#{pw},#{content},SYSDATE)
+		]]>
+	</insert>
+	
+	<!-- 자신이 등록한 글 가져오기  ajax-->
+	
+	<select id="selectByNo" parameterType="int" resultType="com.javaex.vo.GuestVo">
+		<![CDATA[
+			select no, name, password pw, content, reg_date regdate
+			from guestbook
+			where no = #{no}
+		]]>
+	</select>
+	
+	
+	
+	
+</mapper>

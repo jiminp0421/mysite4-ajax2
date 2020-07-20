@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="rboard">
+
+
+	<select id="selectList" resultType="com.javaex.vo.RboardVo">
+		<![CDATA[
+		SELECT
+   				r.no,
+    			r.title,
+  				u.name,
+   				r.hit,
+    			r.reg_date,
+    			u.no,
+    			r.depth
+		FROM
+			    rboard r, users u
+		WHERE
+			    r.user_no = u.no
+		ORDER BY r.group_no desc,
+        r.order_no asc
+			
+		]]>
+	</select>
+	
+	<select id="read" parameterType="int" resultType="com.javaex.vo.RboardVo" >
+		<![CDATA[
+		SELECT 
+			   u.name,
+		       r.hit,
+		       r.reg_date,
+		       r.title,
+		       r.content,
+		       r.group_no,
+               r.order_no,
+               r.depth
+		FROM 
+			   rboard r, users u
+		WHERE 
+			   u.no = r.user_no
+		AND    r.no = #{no}
+		]]>
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		<![CDATA[
+		UPDATE rboard
+		SET hit = hit + 1
+		WHERE no = #{no}	
+		]]>
+	</update>
+
+	<insert id="rboardInsert" parameterType="com.javaex.vo.RboardVo">
+		<![CDATA[ 
+		INSERT INTO rboard
+		VALUES (SEQ_RBOARD_NO.nextval,#{user_no}, #{title}, #{content},0,sysdate,SEQ_RBOARD_NO.CURRVAL,1,0)		
+		]]>
+	</insert>
+	
+	<insert id="rboardInsert2" parameterType="com.javaex.vo.RboardVo">
+		<![CDATA[ 
+		INSERT INTO rboard
+		VALUES (SEQ_RBOARD_NO.nextval,#{user_no}, #{title}, #{content},0, sysdate, #{group_no},#{order_no},#{depth})
+		]]>
+	</insert>
+	
+	<update id="orderUpdate" parameterType="com.javaex.vo.RboardVo">
+		<![CDATA[
+		UPDATE rboard
+		SET order_no = order_no +1
+		WHERE order_no > #{order_no}
+		AND group_no = #{group_no}
+		]]>
+	</update>
+
+
+
+
+
+</mapper>
