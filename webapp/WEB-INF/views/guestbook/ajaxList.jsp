@@ -10,16 +10,9 @@
 <link href="${pageContext.request.contextPath }/assets/css/mysite.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath }/assets/css/guestbook.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath }/assets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
-
-
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/bootstrap/js/bootstrap.js"></script>
-
-
 </head>
-
-
-
 <body>
 	<div id="wrap">
 
@@ -54,13 +47,13 @@
 						</colgroup>
 						<tbody>
 							<tr>
-								<th><label class="form-text" for="input-uname">이름</label></td>
+								<th><label class="form-text" for="input-uname">이름</label></th>
 								<td><input id="input-uname" type="text" name="name"></td>
-								<th><label class="form-text" for="input-pass">패스워드</label></td>
+								<th><label class="form-text" for="input-pass">패스워드</label></th>
 								<td><input id="input-pass" type="password" name="pw"></td>
 							</tr>
 							<tr>
-								<td colspan="4"><textarea name="content" cols="72" rows="5"></textarea></td>
+								<td colspan="4"><textarea id="input-content" name="content" cols="72" rows="5"></textarea></td>
 							</tr>
 							<tr class="button-area">
 								<td colspan="4"><button id="btnSubmit" type="submit">등록</button></td>
@@ -69,8 +62,6 @@
 						</tbody>
 
 					</table>
-					<button id="test" type="button">모달테스트</button>
-					
 					<!-- //guestWrite -->
 				
 				
@@ -94,7 +85,7 @@
 
 	</div>
 	<!-- //wrap -->
-
+	
 	<!-- 삭제팝업(모달)창 -->
 	<div class="modal fade" id="delModal">
 		<div class="modal-dialog">
@@ -122,7 +113,6 @@
 	</div>
 	<!-- /.modal -->
 
-
 </body>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -132,196 +122,141 @@ $(document).ready(function(){
 	
 });
 
-
-//모달테스트
-$("#test").on("click", function(){ 
-	event.preventDefault(); //a태그 링크 기본기능 막으려고
-	console.log("모달테스트");
-	$("#delModal").modal();
-}); 
-
-//리스트 삭제버튼 클릭할때
 $("#guestbookListArea").on("click", "a", function(){
-	console.log("리스트 지역 클릭");
-	event.preventDefault(); //a태그 링크 기본기능 막으려고
+	event.preventDefault();
 	
-	//no값 구하기
 	var $this = $(this);
 	var no = $this.data("delno");
 	console.log(no);
 	console.log($this);
 	
-	//no값 모달창에 입력
+	$("#modalPassword").val("");
+	
 	$("#modalNo").val(no);
-	
-	//input에 값 비우기
-	$("modalPassword").val("");
-	
-	//모달창보이기
+
 	$("#delModal").modal();
+	
 });
-	
-	
-//모달창 삭제버튼 클릭할때
+
 $("#btnDel").on("click", function(){
-	//이벤트체크
-	console.log("모달창 삭제버튼 클릭");
-	//데이터 수집
 	var pw = $("#modalPassword").val();
 	var no = $("#modalNo").val();
 	
-
+	var data = {
+			no : no,
+			pw : pw
+	}
 	
-	//데이터 전송--> 그리기 작업
+	console.log(pw + ", " + no + ", " + data);
+	
 	$.ajax({
 		
-		url: "${pageContext.request.contextPath}/api/guest/delete",
+		url : "${pageContext.request.contextPath }/api/guest/delete",		
 		type : "post",
 		//contentType : "application/json",
-		data : {pw: pw, no: no}, //파라미터로 보내는방식 //제이슨방식 두개(write가 제이슨방식)-데이터가많을때사용한다
-		
-		dataType: "json",
-		success : function(count) {
+		data : data,
+		dataType : "json",
+		success : function(count){
 			console.log(count);
 			
-			if(count == 1 ){
-				//모달창닫고
-				$("#delModal").modal("hide");
-				//리스트 지우기
-				$("#t-"+ no).remove();
-			}else{
-				//모달창만 닫기
-				$("#delModal").modal("hide");
+			if(count == 1){
+				$("#i-"+data.no).remove();
 			}
-		
+			
+			$("#delModal").modal("hide");
 		},
 		error : function(XHR, status, error) {
 			console.error(status + " : " + error);
-			}
-		
-		
-		});
-	
-			
-	});
-
-	
-
-
-
-//글쓰기 클릭이벤트
-$("#btnSubmit").on("click", function(){
-	//이벤트체크
-	console.log("글쓰기버튼");
-	//event.prventDefault();
-	
-	//데이터수집
-	var uname = $("#input-uname").val();
-	var pass = $("#input-pass").val();
-	var content = $("[name = 'content']").val();
-	
-	
-	//제이슨 표기법
-		
-	var guestbookVo = {
-		name : uname,
-		pw : pass,
-		content : content
-		};
-		console.log(guestbookVo);
-
-		//데이터전송
-		$.ajax({
-			/*
-			url: "${pageContext.request.contextPath}/api/guest/write",
-			type : "post",
-			//contentType : "application/json",
-			data : guestbookVo,*/
-
-			url : "${pageContext.request.contextPath}/api/guest/write",
-			type : "post",
-			contentType : "application/json",
-			data : JSON.stringify(guestbookVo),
-
-			dataType : "json",
-			success : function(guestbookVo) {
-				console.log(guestbookVo);
-				/*성공시 처리해야될 코드 작성*/
-				render(guestbookVo, "up");
-
-				$("#input-uname").val("");
-				$("input-pass").val("");
-				$("[name = 'content']").val("");
-
-			},
-			error : function(XHR, status, error) {
-				console.error(status + " : " + error);
-			}
-
-		});
-
-	});
-
-	function fetchList() {
-		$.ajax({
-
-			url : "${pageContext.request.contextPath }/api/guest/list",
-			type : "post",
-			//contentType : "application/json",
-			//data : {name: ”홍길동"},
-
-			dataType : "json",
-			success : function(guestbookList) {
-				console.log(guestbookList);
-				/*성공시 처리해야될 코드 작성*/
-				//$("#guestbookListArea").html()
-
-				for (var i = 0; i < guestbookList.length; i++) {
-					render(guestbookList[i], "down");
-
-				}
-
-			},
-			error : function(XHR, status, error) {
-				console.error(status + " : " + error);
-			}
-
-		});
-
-	}
-
-	//리스트 그리기(1개씩)
-
-	function render(guestVo, direction) {
-		var str = "";
-
-		str += "<table id='t-"+guestVo.no+"' class='guestRead'>";
-		str += "		<colgroup>";
-		str += "			<col style='width: 10%;'>";
-		str += "			<col style='width: 40%;'>";
-		str += "			<col style='width: 40%;'>";
-		str += "			<col style='width: 10%;'>";
-		str += "		</colgroup>";
-		str += "		<tr>";
-		str += "			<td>" + guestVo.no + "</td>";
-		str += "			<td>" + guestVo.name + "</td>";
-		str += "			<td>" + guestVo.regdate + "</td>";
-		str += "			<td><a href='' data-delno='" + guestVo.no + "'>[삭제]</a></td>";
-		str += "		</tr>";
-		str += "		<tr>";
-		str += "			<td colspan=4 class='text-left'>" + guestVo.content
-				+ "</td>";
-		str += "		</tr>";
-		str += "</table>";
-
-		if (direction == "up") {
-			$("#guestbookListArea").prepend(str);
-		} else if (direction == "down") {
-			$("#guestbookListArea").append(str);
-		} else {
-			console.log("direction 오류");
 		}
-	}
+		
+	});
+});
+
+$("#btnSubmit").on("click", function(){
+	var name = $("#input-uname").val();
+	var pass = $("#input-pass").val();
+	var content = $("#input-content").val();
+	
+	var vo = {
+			name : name,
+			pw : pass,
+			content:content
+	};
+	
+	$.ajax({
+		
+		url : "${pageContext.request.contextPath }/api/guest/write",		
+		type : "post",
+		contentType : "application/json",
+		data : JSON.stringify(vo),
+		dataType : "json",
+		success : function(guestVo){
+			console.log(guestVo);
+			render(guestVo);
+		},
+		error : function(XHR, status, error) {
+			console.error(status + " : " + error);
+		}
+		
+	});
+	
+	$("#input-uname").val("");
+	$("#input-pass").val("");
+	$("#input-content").val("");
+});
+
+function fetchList(){
+	$.ajax({
+		
+		url : "${pageContext.request.contextPath }/api/guest/list",		
+		type : "post",
+		//contentType : "application/json",
+		//data : {name: ”홍길동"},
+		dataType : "json",
+		success : function(guestbookList){
+			console.log(guestbookList);
+			/*성공시 처리해야될 코드 작성*/
+			//$("#guestbookListArea").html()
+			
+			
+			for(var i=0; i<guestbookList.length; i++){
+				render(guestbookList[i]);
+			}
+			
+		},
+		error : function(XHR, status, error) {
+			console.error(status + " : " + error);
+		}
+		
+	});
+	
+	
+}
+//리스트 그리기(1개씩)
+function render(guestVo) {
+	var str ="";
+	str +="<table id=i-"+ guestVo.no  +" class='guestRead'>";
+	str +="		<colgroup>";
+	str +="			<col style='width: 10%;'>";
+	str +="			<col style='width: 40%;'>";
+	str +="			<col style='width: 40%;'>";
+	str +="			<col style='width: 10%;'>";
+	str +="		</colgroup>";
+	str +="		<tr>";
+	str +="			<td>"+ guestVo.no +"</td>";
+	str +="			<td>"+ guestVo.name +"</td>";
+	str +="			<td>"+ guestVo.regdate+"</td>";
+	str +="			<td><a href='' data-delno="+guestVo.no+">[삭제]</a></td>";
+	str +="		</tr>";
+	str +="		<tr>";
+	str +="			<td colspan=4 class='text-left'>" + guestVo.content + "</td>";
+	str +="		</tr>";
+	str +="</table>";	
+	
+	
+	$("#guestbookListArea").prepend(str);
+	
+}
 </script>
 
 

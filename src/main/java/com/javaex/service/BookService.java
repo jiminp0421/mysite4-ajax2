@@ -56,7 +56,13 @@ public class BookService {
 		return bookDao.selectByNo(no);		
 	}
 	
-	
+	public GuestVo  intsertById(GuestVo guestVo) {
+		bookDao.insert(guestVo);
+		
+		GuestVo vo = bookDao.selectByNo(guestVo.getNo());
+		
+		return vo;
+	}
 	
 
 }

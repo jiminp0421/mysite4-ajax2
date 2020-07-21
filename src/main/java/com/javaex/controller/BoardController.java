@@ -23,15 +23,15 @@ public class BoardController {
 	
 	
 	@RequestMapping("/boardList")
-	public String boardList(Model model, @RequestParam ("page") int page) {
+	public String boardList(Model model, @ModelAttribute BoardVo vo) {
 		
 		int count = boardService.count();
 		System.out.println("C.boardlist");
 		
-		List<BoardVo> bList = boardService.showBoardList(page, "");
+		List<BoardVo> bList = boardService.showBoardList(vo.getPage(), "");
 		
 		
-//		Map<String, Integer> countMap= boardService.count("");
+		//Map<String, Integer> countMap= boardService.count("");
 		
 		model.addAttribute("bList", bList);
 		model.addAttribute("count", count);
@@ -39,6 +39,21 @@ public class BoardController {
 		
 		return "/board/list";
 	}
+	
+	//게시판 페이징 리스트
+	
+	@RequestMapping("/boardList2")
+	public String endPageBtnNo(@RequestParam(value="crtPage", required=false, defaultValue="1") int crtPage, Model model) {
+		
+		System.out.println("boardContoller/list2");
+		System.out.println(crtPage);
+		
+		Map<String, Object> pMap = boardService.showBoardList2(crtPage);
+		model.addAttribute("pMap", pMap);
+		System.out.println(pMap.toString());
+		return "/board/list";
+	}
+	
 	
 	
 	

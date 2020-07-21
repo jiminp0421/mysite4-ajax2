@@ -9,8 +9,12 @@ public class BoardVo {
 	private int hit;
 	private String reg_date;
 	private int user_no;
+	private int page;
 	
 	
+	
+
+
 	public BoardVo() {}
 
 
@@ -24,7 +28,14 @@ public class BoardVo {
 		this.user_no = user_no;
 	}
 
+	public int getPage() {
+		return page;
+	}
 
+
+	public void setPage(int page) {
+		this.page = page;
+	}
 	
 	public int getNo() {
 		return no;

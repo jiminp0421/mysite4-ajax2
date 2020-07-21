@@ -18,6 +18,49 @@
 		]]>
 	</select>
 	
+	<select id="boardList2" parameterType="map" resultType="com.javaex.vo.BoardVo">
+		<![CDATA[
+		select  r.rn
+       			,r.no
+      			,r.title
+      			,r.content
+       			,r.hit
+       			,r.reg_date reg_date
+       			,r.user_no user_no
+       			,r.name name
+		from (select rownum rn,
+              		 o.no,
+              		 o.title,
+              		 o.content,
+              		 o.hit,
+              		 o.reg_date,
+              		 o.user_no,
+              		 o.name
+      		  from  (select b.no,
+                    		b.title,
+                    		b.content,
+                    		b.hit,
+                   			b.reg_date,
+                    		b.user_no,
+                    		u.name
+             		 from board b, users u
+             		 where b.user_no = u.no
+             		 order by no desc)o)r
+             where r.rn > #{startRnum}
+             and r.rn <= #{endRnum}	 
+		]]>	
+	</select>
+	
+	
+	<select id="totalCount" resultType="int">
+		<![CDATA[
+			select count(*)
+			from board
+		]]>	
+	</select>
+	
+
+	
 	<select id="count" resultType="int">
 		<![CDATA[
 			select count(no)
@@ -56,6 +99,7 @@
 	
 	</delete>
 	
+	<!-- 조회수가져오기 -->
 	<update id="update" parameterType="com.javaex.vo.BoardVo">
 		<![CDATA[ 
 			update board
