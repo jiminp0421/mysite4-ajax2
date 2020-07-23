@@ -52,7 +52,7 @@ public class FileUploadService {
 		
 		
 		//파일 -->필요한 정보 추출 -->DB에 저장
-		//no, orgName, savaName, filePath, fileSize
+		//no (pk key), orgName, savaName, filePath, fileSize 테이블 이름 File or File 
 		
 		return saveName;
 	}

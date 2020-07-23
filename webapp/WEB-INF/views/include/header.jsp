@@ -27,7 +27,7 @@
 		<div id="nav">
 			<ul>
 				<li><a href="/mysite4/guest/list">방명록</a></li>
-				<li><a href="">갤러리</a></li>
+				<li><a href="/mysite4/gallery/list">갤러리</a></li>
 				<li><a href="/mysite4/board/boardList?page=1">게시판</a></li>
 				<li><a href="">입사지원서</a></li>
 			</ul>

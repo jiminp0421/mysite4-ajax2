@@ -42,7 +42,7 @@
 
 			<div id="user">
 				<div id="joinForm">
-					<form action="${pageContext.request.contextPath }/user/join" method="get">
+					<form id="joinFormtag" action="${pageContext.request.contextPath }/user/join" method="get">
 
 						<!-- 아이디 -->
 						<div class="form-group">
@@ -108,15 +108,34 @@
 </body>
 
 <script type="text/javascript">
+//서비스 약관여부
+$("#joinFormtag").on("submit", function(){ //submit은 폼에다가 이름을 넣어준다.
+	
+	var agree = $("#chk-agree").is(":checked");
+	
+	if(agree == true){
+		return true;
+	}else {
+		alert("약관에 동의해주세요");
+		alert(agree);
+		return false;
+	}
+	
+	
+});
+
+
+
+
+
+//아이디 중복체크
 	$("#btnIdCheck").on("click", function(){
 		console.log("버튼클릭");
 		var uId = $("#input-uid").val(); 
 		console.log(uId);
 		
 		var userInfo ={
-				userId: uId
-				
-				
+				userId: uId		
 		}
 		
 		$.ajax({

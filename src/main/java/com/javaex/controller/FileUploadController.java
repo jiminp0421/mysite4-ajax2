@@ -34,7 +34,6 @@ public class FileUploadController {
 		String saveName= fileUploadService.restore(file);
 		model.addAttribute("saveName", saveName);
 		
-		
 		return"fileupload/result";
 	}
 
